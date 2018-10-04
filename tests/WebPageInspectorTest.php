@@ -7,7 +7,6 @@ use webignition\InternetMediaTypeInterface\InternetMediaTypeInterface;
 use webignition\WebPageInspector\CharacterSetExtractor;
 use webignition\WebPageInspector\UnparseableContentTypeException;
 use webignition\WebPageInspector\WebPageInspector;
-use webignition\WebResource\TestingTools\FixtureLoader;
 use webignition\WebResourceInterfaces\WebPageInterface;
 
 class ParserTest extends \PHPUnit\Framework\TestCase

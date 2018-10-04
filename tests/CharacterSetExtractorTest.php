@@ -4,7 +4,6 @@ namespace webignition\WebPageInspector\Tests;
 
 use webignition\WebPageInspector\CharacterSetExtractor;
 use webignition\WebPageInspector\UnparseableContentTypeException;
-use webignition\WebResource\TestingTools\FixtureLoader;
 
 class CharacterSetExtractorTest extends \PHPUnit\Framework\TestCase
 {

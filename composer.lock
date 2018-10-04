@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "db306ffe9d1b51eb0638bafb2764fd97",
+    "content-hash": "8aa894cffa235aac120884944abcb6e4",
     "packages": [
         {
             "name": "psr/http-message",
@@ -2085,46 +2085,6 @@
             ],
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
             "time": "2017-04-07T12:08:54+00:00"
-        },
-        {
-            "name": "webignition/web-resource-testing-tools",
-            "version": "0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/webignition/web-resource-testing-tools.git",
-                "reference": "1638d85f18bcbb1fa789dcaa9a3a2252f46c5867"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/webignition/web-resource-testing-tools/zipball/1638d85f18bcbb1fa789dcaa9a3a2252f46c5867",
-                "reference": "1638d85f18bcbb1fa789dcaa9a3a2252f46c5867",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "~1.0",
-                "psr/http-message": "~1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "webignition\\WebResource\\TestingTools\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jon Cram",
-                    "email": "jon@webignition.net"
-                }
-            ],
-            "homepage": "https://github.com/webignition/web-resource-testing-tools",
-            "time": "2018-03-23T12:34:37+00:00"
         },
         {
             "name": "webmozart/assert",
