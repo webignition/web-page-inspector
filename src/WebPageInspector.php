@@ -35,7 +35,7 @@ class WebPageInspector
     public function __construct(WebPageInterface $webPage, ?CharacterSetExtractor $characterSetExtractor = null)
     {
         $this->webPage = $webPage;
-        $webPageContent = $webPage->getContent();
+        $webPageContent = (string)$webPage->getContent();
 
         $characterSetExtractor = (empty($characterSetExtractor))
             ? new CharacterSetExtractor()
