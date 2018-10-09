@@ -31,9 +31,9 @@
     },
     "require": {
         "php": ">=7.2.0",
-        "webignition/web-resource-interfaces":">=3.2,<4",
-        "webignition/internet-media-type-interface":"^0.1",
-        "webignition/internet-media-type":"^1.2",
+        "webignition/web-resource-interfaces":">=3.3,<4",
+        "webignition/internet-media-type-interface":"^0.4",
+        "webignition/internet-media-type":"^2",
         "symfony/dom-crawler":"^4.1",
         "symfony/css-selector":"^4.1"
     },
