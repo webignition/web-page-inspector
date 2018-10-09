@@ -52,12 +52,15 @@ class ParserTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @dataProvider getCharacterSetDataProvider
+     *
+     * @param null|string $content
+     *
      * @throws UnparseableContentTypeException
      */
-    public function testGetCharacterSet()
+    public function testGetCharacterSet(?string $content)
     {
         $characterSet = 'utf-8';
-        $content = '';
 
         $webPage = \Mockery::mock(WebPageInterface::class);
         $webPage
@@ -73,6 +76,18 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $webPageInspector = new WebPageInspector($webPage, $characterSetExtractor);
 
         $this->assertEquals($characterSet, $webPageInspector->getCharacterSet());
+    }
+
+    public function getCharacterSetDataProvider(): array
+    {
+        return [
+            'null content' => [
+                'content' => null,
+            ],
+            'empty content' => [
+                'content' => '',
+            ],
+        ];
     }
 
     /**
