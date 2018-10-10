@@ -35,7 +35,7 @@ class WebPageInspector
     public function __construct(WebPageInterface $webPage, ?CharacterSetExtractor $characterSetExtractor = null)
     {
         $this->webPage = $webPage;
-        $webPageContent = (string)$webPage->getContent();
+        $webPageContent = trim($webPage->getContent());
 
         $characterSetExtractor = (empty($characterSetExtractor))
             ? new CharacterSetExtractor()
@@ -57,7 +57,7 @@ class WebPageInspector
                 $contentTypeString .= '; charset=' . $this->characterSet;
             }
 
-            $webPageContent = $this->webPage->getContent();
+            $webPageContent = trim($this->webPage->getContent());
 
             $this->crawler = new Crawler();
             $this->crawler->addContent($webPageContent, $contentTypeString);

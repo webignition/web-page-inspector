@@ -205,6 +205,11 @@ class ParserTest extends \PHPUnit\Framework\TestCase
                 'selectors' => 'script[src]',
                 'expectedElement' => '<script type="text/javascript" src="//example.com/foo.js"></script>',
             ],
+            'from content with leading null bytes' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('leading-null-bytes.html')),
+                'selectors' => 'a[href]',
+                'expectedElement' => '<a href="/foo">Foo</a>',
+            ],
         ];
     }
 
