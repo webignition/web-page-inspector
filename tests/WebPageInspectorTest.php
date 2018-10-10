@@ -208,6 +208,88 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    /**
+     * @dataProvider querySelectorAllDataProvider
+     *
+     * @param WebPageInterface $webPage
+     * @param string $selectors
+     * @param array $expectedElements
+     *
+     * @throws UnparseableContentTypeException
+     */
+    public function testQuerySelectorAll(WebPageInterface $webPage, string $selectors, array $expectedElements)
+    {
+        $inspector = new WebPageInspector($webPage);
+        $elements = $inspector->querySelectorAll($selectors);
+
+        if (empty($expectedElements)) {
+            $this->assertEmpty($elements);
+        } else {
+            $elementStrings = [];
+
+            foreach ($elements as $element) {
+                /* @var \DOMElement $element */
+                $elementStrings[] = $element->ownerDocument->saveHTML($element);
+            }
+
+            $this->assertSame($expectedElements, $elementStrings);
+        }
+
+        $this->assertTrue(true);
+    }
+
+    public function querySelectorAllDataProvider()
+    {
+        FixtureLoader::$fixturePath = __DIR__ . '/Fixtures';
+
+        return [
+            'empty content, empty selector' => [
+                'webPage' => $this->createWebPage(),
+                'selectors' => '',
+                'expectedElements' => [],
+            ],
+            'empty content, has selector' => [
+                'webPage' => $this->createWebPage(),
+                'selectors' => '.foo',
+                'expectedElements' => [],
+            ],
+            'document with script elements, non-matching selector' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('document-with-script-elements.html')),
+                'selectors' => '.foo',
+                'expectedElements' => [],
+            ],
+            'document with script elements, matching script selector' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('document-with-script-elements.html')),
+                'selectors' => 'script',
+                'expectedElements' => [
+                    '<script type="text/javascript" src="//example.com/foo.js"></script>',
+                    '<script type="text/javascript" src="/vendor/example/bar.js"></script>',
+                    '<script type="text/javascript">var firstFromHead = true;</script>',
+                    '<script type="text/javascript">var secondFromHead = true;</script>',
+                    '<script type="text/javascript">var firstFromBody = true;</script>',
+                ],
+            ],
+            'document with script elements, matching script[src] selector' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('document-with-script-elements.html')),
+                'selectors' => 'script[src]',
+                'expectedElements' => [
+                    '<script type="text/javascript" src="//example.com/foo.js"></script>',
+                    '<script type="text/javascript" src="/vendor/example/bar.js"></script>',
+                ],
+            ],
+            'document with script elements, matching script:not([src]) selector' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('document-with-script-elements.html')),
+                'selectors' => 'script:not([src])',
+                'expectedElements' => [
+                    '<script type="text/javascript">var firstFromHead = true;</script>',
+                    '<script type="text/javascript">var secondFromHead = true;</script>',
+                    '<script type="text/javascript">var firstFromBody = true;</script>',
+                ],
+            ],
+        ];
+    }
+
+
     private function createWebPage(?string $content = null)
     {
         $contentType = \Mockery::mock(InternetMediaTypeInterface::class);

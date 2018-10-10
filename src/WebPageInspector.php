@@ -86,4 +86,28 @@ class WebPageInspector
 
         return $filteredCrawler->getNode(0);
     }
+
+    /**
+     * An almost-implementation of querySelectorAll
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll
+     *
+     * We can't return a \DOMNodeList (as is the case for the above docs). We return instead an array of \DOMElement
+     *
+     * @param string $selectors
+     *
+     * @return array
+     */
+    public function querySelectorAll(string $selectors): array
+    {
+        $crawler = $this->getCrawler();
+        $filteredCrawler = $crawler->filter($selectors);
+
+        $elements = [];
+
+        foreach ($filteredCrawler as $domElement) {
+            $elements[] = $domElement;
+        }
+
+        return $elements;
+    }
 }
