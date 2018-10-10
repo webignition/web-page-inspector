@@ -65,4 +65,25 @@ class WebPageInspector
 
         return $this->crawler;
     }
+
+    /**
+     * An implementation of querySelector
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector
+     *
+     * @param string $selectors
+     *
+     * @return \DOMElement|null
+     */
+    public function querySelector(string $selectors): ?\DOMElement
+    {
+        $crawler = $this->getCrawler();
+
+        $filteredCrawler = $crawler->filter($selectors);
+
+        if (0 === $filteredCrawler->count()) {
+            return null;
+        }
+
+        return $filteredCrawler->getNode(0);
+    }
 }
