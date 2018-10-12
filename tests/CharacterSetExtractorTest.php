@@ -52,7 +52,7 @@ class CharacterSetExtractorTest extends \PHPUnit\Framework\TestCase
      *
      * @throws UnparseableContentTypeException
      */
-    public function testExtractSetSuccess(string $content, ?string $expectedCharacterSet)
+    public function testExtractSuccess(string $content, ?string $expectedCharacterSet)
     {
         $characterSetExtractor = new CharacterSetExtractor();
 
@@ -87,6 +87,10 @@ class CharacterSetExtractorTest extends \PHPUnit\Framework\TestCase
             'meta charset="foo" (invalid value, well-formed)' => [
                 'content' => FixtureLoader::load('empty-document-with-invalid-meta-charset.html'),
                 'expectedCharacterSet' => 'foo',
+            ],
+            'meta charset="UTF-8" with non-matching meta name="" elements' => [
+                'content' => FixtureLoader::load('empty-document-with-meta-charset-and-non-matching-meta-name.html'),
+                'expectedCharacterSet' => 'utf-8',
             ],
         ];
     }

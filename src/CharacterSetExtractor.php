@@ -88,7 +88,7 @@ class CharacterSetExtractor
         $metaCharsetCrawler = $characterSetCrawler->filter('meta[charset]');
 
         $callable = function (Crawler $metaCharsetNode) {
-            return $metaCharsetNode->attr('charset');
+            return strtolower($metaCharsetNode->attr('charset'));
         };
 
         $metaCharsetCrawlerResults = array_filter($metaCharsetCrawler->each($callable));
@@ -107,10 +107,10 @@ class CharacterSetExtractor
         $metaHttpEquivCrawler = $characterSetCrawler->filter($selector);
 
         $callable = function (Crawler $metaHttpEquivNode) use ($identifierAttributeName) {
-            $identifierAttributeValue = strtolower($metaHttpEquivNode->attr('content-type'));
-            $contentValue = trim($metaHttpEquivNode->attr('content'));
+            $identifierAttributeValue = strtolower($metaHttpEquivNode->attr($identifierAttributeName));
+            $contentValue = strtolower(trim($metaHttpEquivNode->attr('content')));
 
-            if ($identifierAttributeValue === $identifierAttributeValue && !empty($contentValue)) {
+            if ('content-type' === $identifierAttributeValue && !empty($contentValue)) {
                 return $contentValue;
             }
 
