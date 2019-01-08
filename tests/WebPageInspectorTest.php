@@ -1,59 +1,18 @@
 <?php
+/** @noinspection PhpDocSignatureInspection */
 
 namespace webignition\WebPageInspector\Tests;
 
 use Symfony\Component\DomCrawler\Crawler;
 use webignition\InternetMediaTypeInterface\InternetMediaTypeInterface;
 use webignition\WebPageInspector\CharacterSetExtractor;
-use webignition\WebPageInspector\UnparseableContentTypeException;
 use webignition\WebPageInspector\WebPageInspector;
 use webignition\WebResourceInterfaces\WebPageInterface;
 
 class ParserTest extends \PHPUnit\Framework\TestCase
 {
     /**
-     * @dataProvider getCharacterSetUnparseableContentTypeDataProvider
-     *
-     * @param WebPageInterface $webPage
-     * @param string $expectedExceptionMessage
-     * @param string $expectedContentType
-     */
-    public function testCreateUnparseableContentType(
-        WebpageInterface $webPage,
-        string $expectedExceptionMessage,
-        string $expectedContentType
-    ) {
-        try {
-            new WebPageInspector($webPage);
-            $this->fail(UnparseableContentTypeException::class . ' not thrown');
-        } catch (UnparseableContentTypeException $unparseableContentTypeException) {
-            $this->assertEquals(UnparseableContentTypeException::CODE, $unparseableContentTypeException->getCode());
-            $this->assertEquals($expectedExceptionMessage, $unparseableContentTypeException->getMessage());
-            $this->assertEquals($expectedContentType, $unparseableContentTypeException->getContentType());
-        }
-    }
-
-    public function getCharacterSetUnparseableContentTypeDataProvider(): array
-    {
-        FixtureLoader::$fixturePath = __DIR__ . '/Fixtures';
-
-        return [
-            'meta name="Content-Type" (unparseable value, malformed)' => [
-                'webPage' => $this->createWebPage(
-                    FixtureLoader::load('empty-document-with-unparseable-http-equiv-content-type.html')
-                ),
-                'expectedExceptionMessage' => 'Unparseable content type "f o o"',
-                'expectedContentType' => 'f o o',
-            ],
-        ];
-    }
-
-    /**
      * @dataProvider getCharacterSetDataProvider
-     *
-     * @param WebPageInterface $webPage
-     *
-     * @throws UnparseableContentTypeException
      */
     public function testGetCharacterSet(WebPageInterface $webPage)
     {
@@ -84,13 +43,6 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider useCrawlerDataProvider
-     *
-     * @param WebPageInterface $webPage
-     * @param string $selector
-     * @param mixed $eachFunction
-     * @param array $expectedFoundValues
-     *
-     * @throws UnparseableContentTypeException
      */
     public function testUseCrawler(
         WebPageInterface $webPage,
@@ -161,12 +113,6 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider querySelectorDataProvider
-     *
-     * @param WebPageInterface $webPage
-     * @param string $selectors
-     * @param string|null$expectedElement
-     *
-     * @throws UnparseableContentTypeException
      */
     public function testQuerySelector(WebPageInterface $webPage, string $selectors, ?string $expectedElement)
     {
@@ -180,7 +126,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    public function querySelectorDataProvider()
+    public function querySelectorDataProvider(): array
     {
         FixtureLoader::$fixturePath = __DIR__ . '/Fixtures';
 
@@ -215,12 +161,6 @@ class ParserTest extends \PHPUnit\Framework\TestCase
 
     /**
      * @dataProvider querySelectorAllDataProvider
-     *
-     * @param WebPageInterface $webPage
-     * @param string $selectors
-     * @param array $expectedElements
-     *
-     * @throws UnparseableContentTypeException
      */
     public function testQuerySelectorAll(WebPageInterface $webPage, string $selectors, array $expectedElements)
     {
@@ -243,7 +183,7 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(true);
     }
 
-    public function querySelectorAllDataProvider()
+    public function querySelectorAllDataProvider(): array
     {
         FixtureLoader::$fixturePath = __DIR__ . '/Fixtures';
 
@@ -293,7 +233,6 @@ class ParserTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
-
 
     private function createWebPage(?string $content = null)
     {
