@@ -26,12 +26,6 @@ class WebPageInspector
      */
     private $crawler;
 
-    /**
-     * @param WebPageInterface $webPage
-     * @param CharacterSetExtractor|null $characterSetExtractor
-     *
-     * @throws UnparseableContentTypeException
-     */
     public function __construct(WebPageInterface $webPage, ?CharacterSetExtractor $characterSetExtractor = null)
     {
         $this->webPage = $webPage;

@@ -12,16 +12,19 @@ class CharacterSetExtractor
      * @param string $content
      *
      * @return string|null
-     *
-     * @throws UnparseableContentTypeException
      */
     public function extract(string $content)
     {
         $charset = null;
         $characterSetCrawler = new Crawler($content);
 
-        $contentType = $this->getContentTypeFromMetaHttpEquivElements($characterSetCrawler);
-        $charset = $this->getCharacterSetFromContentType($contentType);
+        $contentTypes = $this->getContentTypesFromMetaHttpEquivElements($characterSetCrawler);
+
+        foreach ($contentTypes as $contentType) {
+            if (empty($charset)) {
+                $charset = $this->getCharacterSetFromContentType($contentType);
+            }
+        }
 
         if (empty($charset)) {
             $charset = $this->getCharacterSetFromMetaCharsetElement($characterSetCrawler);
@@ -30,13 +33,6 @@ class CharacterSetExtractor
         return $charset;
     }
 
-    /**
-     * @param string $contentType
-     *
-     * @return string|string
-     *
-     * @throws UnparseableContentTypeException
-     */
     private function getCharacterSetFromContentType(?string $contentType): ?string
     {
         $charset = null;
@@ -56,31 +52,29 @@ class CharacterSetExtractor
                 $charset = (string)$mediaType->getParameter('charset')->getValue();
             }
         } catch (ParseException $parseException) {
-            throw new UnparseableContentTypeException($contentType);
+            // Intentionally swallow exception
         }
 
         return $charset;
     }
 
-    private function getContentTypeFromMetaHttpEquivElements(Crawler $characterSetCrawler): ?string
+    private function getContentTypesFromMetaHttpEquivElements(Crawler $characterSetCrawler): array
     {
+        $contentTypes = [];
+
         $identifierAttributeNames = [
             'http-equiv',
             'name', // invalid but happens
         ];
 
-        $contentType = null;
-
         foreach ($identifierAttributeNames as $identifierAttributeName) {
-            if (empty($contentType)) {
-                $contentType = $this->getContentTypeStringByMetaElement(
-                    $characterSetCrawler,
-                    $identifierAttributeName
-                );
-            }
+            $contentTypes = array_merge($contentTypes, $this->getContentTypeStringsByMetaElement(
+                $characterSetCrawler,
+                $identifierAttributeName
+            ));
         }
 
-        return $contentType;
+        return $contentTypes;
     }
 
     private function getCharacterSetFromMetaCharsetElement(Crawler $characterSetCrawler): ?string
@@ -98,27 +92,27 @@ class CharacterSetExtractor
         return $charset ? $charset : null;
     }
 
-    private function getContentTypeStringByMetaElement(
+    private function getContentTypeStringsByMetaElement(
         Crawler $characterSetCrawler,
         string $identifierAttributeName
-    ): ?string {
+    ): array {
+        $contentTypes = [];
+
         $selector = 'meta[' . $identifierAttributeName . ']';
 
         $metaHttpEquivCrawler = $characterSetCrawler->filter($selector);
 
-        $callable = function (Crawler $metaHttpEquivNode) use ($identifierAttributeName) {
+        $callable = function (Crawler $metaHttpEquivNode) use ($identifierAttributeName, &$contentTypes) {
             $identifierAttributeValue = strtolower($metaHttpEquivNode->attr($identifierAttributeName));
             $contentValue = strtolower(trim($metaHttpEquivNode->attr('content')));
 
             if ('content-type' === $identifierAttributeValue && !empty($contentValue)) {
-                return $contentValue;
+                $contentTypes[] = $contentValue;
             }
-
-            return null;
         };
 
-        $metaHttpEquivCrawlerResults = array_filter($metaHttpEquivCrawler->each($callable));
+        $metaHttpEquivCrawler->each($callable);
 
-        return reset($metaHttpEquivCrawlerResults);
+        return $contentTypes;
     }
 }
