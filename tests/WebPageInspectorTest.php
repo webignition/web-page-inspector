@@ -234,6 +234,15 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
+    public function testGetWebPage()
+    {
+        $webPage = $this->createWebPage();
+
+        $inspector = new WebPageInspector($webPage);
+
+        $this->assertSame($webPage, $inspector->getWebPage());
+    }
+
     private function createWebPage(?string $content = null)
     {
         $contentType = \Mockery::mock(InternetMediaTypeInterface::class);

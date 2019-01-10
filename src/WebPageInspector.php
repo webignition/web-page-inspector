@@ -38,6 +38,11 @@ class WebPageInspector
         $this->characterSet = $characterSetExtractor->extract($webPageContent);
     }
 
+    public function getWebPage(): WebPageInterface
+    {
+        return $this->webPage;
+    }
+
     public function getCharacterSet(): ?string
     {
         return $this->characterSet;
