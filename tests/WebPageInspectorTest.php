@@ -8,7 +8,7 @@ use webignition\WebPageInspector\CharacterSetExtractor;
 use webignition\WebPageInspector\WebPageInspector;
 use webignition\WebResourceInterfaces\WebPageInterface;
 
-class ParserTest extends \PHPUnit\Framework\TestCase
+class WebPageInspectorTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider getCharacterSetDataProvider
