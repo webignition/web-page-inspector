@@ -8,12 +8,7 @@ use webignition\InternetMediaType\Parser\Parser as InternetMediaTypeParser;
 
 class CharacterSetExtractor
 {
-    /**
-     * @param string $content
-     *
-     * @return string|null
-     */
-    public function extract(string $content)
+    public function extract(string $content): ?string
     {
         $charset = null;
         $characterSetCrawler = new Crawler($content);
@@ -48,8 +43,12 @@ class CharacterSetExtractor
         try {
             $mediaType = $mediaTypeParser->parse($contentType);
 
-            if ($mediaType->hasParameter('charset')) {
-                $charset = (string)$mediaType->getParameter('charset')->getValue();
+            if (null !== $mediaType) {
+                $charsetParameter = $mediaType->getParameter('charset');
+
+                if (null !== $charsetParameter) {
+                    $charset = (string) $charsetParameter->getValue();
+                }
             }
         } catch (ParseException $parseException) {
             // Intentionally swallow exception
@@ -82,7 +81,7 @@ class CharacterSetExtractor
         $metaCharsetCrawler = $characterSetCrawler->filter('meta[charset]');
 
         $callable = function (Crawler $metaCharsetNode) {
-            return strtolower($metaCharsetNode->attr('charset'));
+            return strtolower((string) $metaCharsetNode->attr('charset'));
         };
 
         $metaCharsetCrawlerResults = array_filter($metaCharsetCrawler->each($callable));
@@ -103,8 +102,8 @@ class CharacterSetExtractor
         $metaHttpEquivCrawler = $characterSetCrawler->filter($selector);
 
         $callable = function (Crawler $metaHttpEquivNode) use ($identifierAttributeName, &$contentTypes) {
-            $identifierAttributeValue = strtolower($metaHttpEquivNode->attr($identifierAttributeName));
-            $contentValue = strtolower(trim($metaHttpEquivNode->attr('content')));
+            $identifierAttributeValue = strtolower((string) $metaHttpEquivNode->attr($identifierAttributeName));
+            $contentValue = strtolower(trim((string) $metaHttpEquivNode->attr('content')));
 
             if ('content-type' === $identifierAttributeValue && !empty($contentValue)) {
                 $contentTypes[] = $contentValue;

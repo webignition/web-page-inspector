@@ -13,7 +13,7 @@ class WebPageInspector
     private $webPage;
 
     /**
-     * @var string
+     * @var string|null
      */
     private $characterSet;
 
@@ -25,7 +25,7 @@ class WebPageInspector
     public function __construct(WebPageInterface $webPage, ?CharacterSetExtractor $characterSetExtractor = null)
     {
         $this->webPage = $webPage;
-        $webPageContent = trim($webPage->getContent());
+        $webPageContent = trim((string) $webPage->getContent());
 
         $characterSetExtractor = (empty($characterSetExtractor))
             ? new CharacterSetExtractor()
@@ -48,7 +48,7 @@ class WebPageInspector
     {
         if (empty($this->crawler)) {
             $contentTypeString = (string) $this->webPage->getContentType();
-            $webPageContent = trim($this->webPage->getContent());
+            $webPageContent = trim((string) $this->webPage->getContent());
 
             $this->crawler = new Crawler();
             $this->crawler->addContent($webPageContent, $contentTypeString);
