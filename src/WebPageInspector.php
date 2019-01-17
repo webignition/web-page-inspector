@@ -47,11 +47,7 @@ class WebPageInspector
     public function getCrawler()
     {
         if (empty($this->crawler)) {
-            $contentTypeString = $this->webPage->getContentType()->getTypeSubtypeString();
-            if (!empty($this->characterSet)) {
-                $contentTypeString .= '; charset=' . $this->characterSet;
-            }
-
+            $contentTypeString = (string) $this->webPage->getContentType();
             $webPageContent = trim($this->webPage->getContent());
 
             $this->crawler = new Crawler();
