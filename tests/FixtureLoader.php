@@ -9,12 +9,7 @@ class FixtureLoader
      */
     public static $fixturePath;
 
-    /**
-     * @param string $name
-     *
-     * @return string
-     */
-    public static function load($name)
+    public static function load(string $name): string
     {
         $fixturePath = realpath(static::$fixturePath . '/' . $name);
 
@@ -25,6 +20,6 @@ class FixtureLoader
             ));
         }
 
-        return file_get_contents($fixturePath);
+        return (string) file_get_contents($fixturePath);
     }
 }
