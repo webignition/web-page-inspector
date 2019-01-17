@@ -275,7 +275,7 @@ class WebPageInspectorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($webPage, $inspector->getWebPage());
     }
 
-    private function createWebPage(?string $content = null, ?string $contentTypeString = 'text/html')
+    private function createWebPage(?string $content = null, string $contentTypeString = 'text/html')
     {
         $contentType = ContentTypeFactory::createFromString($contentTypeString);
 
