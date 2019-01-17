@@ -4,7 +4,6 @@
 namespace webignition\WebPageInspector\Tests;
 
 use Symfony\Component\DomCrawler\Crawler;
-use webignition\InternetMediaTypeInterface\InternetMediaTypeInterface;
 use webignition\WebPageInspector\CharacterSetExtractor;
 use webignition\WebPageInspector\WebPageInspector;
 use webignition\WebResourceInterfaces\WebPageInterface;
@@ -107,6 +106,39 @@ class ParserTest extends \PHPUnit\Framework\TestCase
                     return trim($crawler->text());
                 },
                 'expectedFoundValues' => [],
+            ],
+            'stylesheet href from big5 content without document-level charset' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('document-with-big5-charset-no-charset.html')),
+                'selector' => 'link[rel=stylesheet]',
+                'eachFunction' => function (Crawler $crawler) {
+                    return $crawler->attr('href');
+                },
+                'expectedFoundValues' => [
+                    '·j',
+                ],
+            ],
+            'stylesheet href from big5 content without document-level charset, has web page content type set' => [
+                'webPage' => $this->createWebPage(
+                    FixtureLoader::load('document-with-big5-charset-no-charset.html'),
+                    'text/html; charset=big5'
+                ),
+                'selector' => 'link[rel=stylesheet]',
+                'eachFunction' => function (Crawler $crawler) {
+                    return $crawler->attr('href');
+                },
+                'expectedFoundValues' => [
+                    '搜',
+                ],
+            ],
+            'stylesheet href from big5 content with document-level charset' => [
+                'webPage' => $this->createWebPage(FixtureLoader::load('document-with-big5-charset-has-charset.html')),
+                'selector' => 'link[rel=stylesheet]',
+                'eachFunction' => function (Crawler $crawler) {
+                    return $crawler->attr('href');
+                },
+                'expectedFoundValues' => [
+                    '搜',
+                ],
             ],
         ];
     }
@@ -243,12 +275,9 @@ class ParserTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($webPage, $inspector->getWebPage());
     }
 
-    private function createWebPage(?string $content = null)
+    private function createWebPage(?string $content = null, ?string $contentTypeString = 'text/html')
     {
-        $contentType = \Mockery::mock(InternetMediaTypeInterface::class);
-        $contentType
-            ->shouldReceive('getTypeSubtypeString')
-            ->andReturn('text/html');
+        $contentType = ContentTypeFactory::createFromString($contentTypeString);
 
         $webPage = \Mockery::mock(WebPageInterface::class);
         $webPage
