@@ -54,6 +54,18 @@ class CharacterSetExtractorTest extends \PHPUnit\Framework\TestCase
                 'content' => FixtureLoader::load('empty-document-with-meta-charset-and-non-matching-meta-name.html'),
                 'expectedCharacterSet' => 'utf-8',
             ],
+            'meta http-equiv="Content-Type" incorrectly-encoded gb2312 content' => [
+                'content' => FixtureLoader::load('document-with-script-elements-charset=gb2312.html'),
+                'expectedCharacterSet' => 'gb2312',
+            ],
+            'meta http-equiv="Content-Type" gb2312 content converted to utf-8' => [
+                'content' => mb_convert_encoding(
+                    FixtureLoader::load('document-with-script-elements-charset=gb2312.html'),
+                    'utf-8',
+                    'gb2312'
+                ),
+                'expectedCharacterSet' => 'gb2312',
+            ],
         ];
     }
 }
