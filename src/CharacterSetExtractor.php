@@ -10,8 +10,14 @@ class CharacterSetExtractor
 {
     public function extract(string $content): ?string
     {
+        $encoding = mb_detect_encoding($content, mb_detect_order(), true);
+        if (false === $encoding) {
+            $encoding = 'utf-8';
+        }
+
         $charset = null;
-        $characterSetCrawler = new Crawler($content);
+        $characterSetCrawler = new Crawler();
+        $characterSetCrawler->addHtmlContent($content, $encoding);
 
         $contentTypes = $this->getContentTypesFromMetaHttpEquivElements($characterSetCrawler);
 
