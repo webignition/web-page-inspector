@@ -59,4 +59,44 @@ class IeConditionalCommentInspectorTest extends \PHPUnit\Framework\TestCase
             ],
         ];
     }
+
+    /**
+     * @dataProvider extractDataDataProvider
+     */
+    public function testExtractData(\DOMComment $commentNode, string $expectedData)
+    {
+        $inspector = new IeConditionalCommentInspector();
+
+        $this->assertEquals($expectedData, $inspector->extractData($commentNode));
+    }
+
+    public function extractDataDataProvider(): array
+    {
+        return [
+            'not ie conditional comment; empty' => [
+                'commentNode' => new \DOMComment(''),
+                'expectedData' => '',
+            ],
+            'not ie conditional comment; single line, plain text' => [
+                'commentNode' => new \DOMComment('not ie conditional comment single line'),
+                'expectedData' => '',
+            ],
+            'single line' => [
+                'commentNode' => new \DOMComment('[if false]><p></p><![endif]'),
+                'expectedData' => '<p></p>',
+            ],
+            'is conditional comment; multiple lines' => [
+                'commentNode' => new \DOMComment(implode("\n", [
+                    '[if true]>',
+                    '<link rel="stylesheet" href="/if-true-1.css">',
+                    '<link rel="stylesheet" href="/if-true-2.css">',
+                    '<![endif]',
+                ])),
+                'expectedData' => implode("\n", [
+                    '<link rel="stylesheet" href="/if-true-1.css">',
+                    '<link rel="stylesheet" href="/if-true-2.css">',
+                ]),
+            ],
+        ];
+    }
 }
