@@ -101,4 +101,25 @@ class WebPageInspector
 
         return $elements;
     }
+
+    /**
+     * @return string[]
+     */
+    public function extractIeConditionalCommentData(): array
+    {
+        $commentInspector = new IeConditionalCommentInspector();
+
+        $ieConditionalCommentData = [];
+
+        $crawler = $this->getCrawler();
+        $filteredCrawler = $crawler->filterXPath('//comment()');
+
+        foreach ($filteredCrawler as $commentNode) {
+            if ($commentNode instanceof \DOMComment && $commentInspector->isIeConditionalComment($commentNode)) {
+                $ieConditionalCommentData[] = $commentInspector->extractData($commentNode);
+            }
+        }
+
+        return $ieConditionalCommentData;
+    }
 }
