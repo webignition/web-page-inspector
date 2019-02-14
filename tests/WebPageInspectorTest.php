@@ -275,6 +275,32 @@ class WebPageInspectorTest extends \PHPUnit\Framework\TestCase
         $this->assertSame($webPage, $inspector->getWebPage());
     }
 
+    /**
+     * @dataProvider extractIeConditionalCommentDataDataProvider
+     */
+    public function testExtractIeConditionalCommentData(WebPageInterface $webPage, array $expectedData)
+    {
+        $inspector = new WebPageInspector($webPage);
+
+        $this->assertEquals($expectedData, $inspector->extractIeConditionalCommentData());
+    }
+
+    public function extractIeConditionalCommentDataDataProvider(): array
+    {
+        return [
+            'foo' => [
+                'webPage' => $this->createWebPage(
+                    FixtureLoader::load('ie-conditional-comments.html')
+                ),
+                'expectedData' => [
+                    '<link rel="stylesheet" href="/if-true-1.css">
+    <link rel="stylesheet" href="/if-true-2.css">',
+                    '<link rel="stylesheet" href="/if-false.css">',
+                ],
+            ],
+        ];
+    }
+
     private function createWebPage(?string $content = null, string $contentTypeString = 'text/html')
     {
         $contentType = ContentTypeFactory::createFromString($contentTypeString);
